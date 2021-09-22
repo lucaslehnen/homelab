@@ -1,0 +1,3 @@
+- name: disable-cloud-init
+  src: https://github.com/TcheCode/disable-cloud-init
+  version: 1.0.1
