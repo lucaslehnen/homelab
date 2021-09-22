@@ -1,3 +1,21 @@
-- name: disable-cloud-init
-  src: https://github.com/TcheCode/disable-cloud-init
-  version: 1.0.1
+---
+roles:
+  - name: disable-cloud-init
+    src: https://github.com/lucaslehnen/disable-cloud-init
+    version: 1.0.1
+
+  - name: k3s-reset
+    src: https://github.com/lucaslehnen/k3s-reset.git
+    version: main
+
+  - name: k3s-install
+    src: https://github.com/lucaslehnen/k3s-install
+    version: main
+
+  - name: k3s-config-master
+    src: https://github.com/lucaslehnen/k3s-config-master.git
+    version: main
+
+  - name: k3s-config-worker
+    src: https://github.com/lucaslehnen/k3s-config-worker.git
+    version: main
