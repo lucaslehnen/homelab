@@ -26,7 +26,7 @@
   gather_facts: false
   roles:
     - {role: tchecode.k3s.server, tags: [k3s]}
-    # - {role: helm-install, tags: [k3s]}
+    - {role: helm-install, tags: [k3s]}
     # - {role: prometheus-stack, tags: [k3s, apps]}
   vars:
     server_ip: "{{ hostvars[groups['k3s_server'][0]]['ansible_host'] | default(groups['k3s_server'][0]) }}"

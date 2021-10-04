@@ -1,0 +1,20 @@
+---
+# tasks file for helm-install
+- name: Add an Apt signing key
+  apt_key:
+    url: https://baltocdn.com/helm/signing.asc
+    state: present
+
+- name: Add repository into sources list
+  apt_repository:
+    repo: "deb https://baltocdn.com/helm/stable/debian/ all main"
+    state: present
+
+- name: Install Helm
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - apt-transport-https
+      - helm
