@@ -1,5 +1,10 @@
 # Laboratório pessoal 
 
+<img src="https://img.shields.io/badge/Ansible->%3D2.11.5-red?style=for-the-badge&logo=ansible&logoColor=white" alt="Ansible">
+<img src="https://img.shields.io/badge/Terraform->%3D1.0.7-6a01eb?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform">
+<img src="https://img.shields.io/badge/Packer->%3D1.7.5-blue?style=for-the-badge&logo=packer&logoColor=white" alt="Packer">
+
+
 Este repositório reúne as aplicações e configurações aplicadas no meu laboratório pessoal. Utilizo o lab para testar tecnologias e instalar aplicações de uso diário. 
 
 A ideia é configurar alguns hosts na nuvem e ter as minhas raspberry's locais rodando algumas aplicações. 
@@ -83,7 +88,7 @@ O Terraform é utilizado para a infraestrutura de Cloud, o Packer para construir
 Links das ferramentas:
 
 - https://www.terraform.io/
-- https://www.packer.io/
+- https://www.packer.io/downloads
 - https://docs.ansible.com/ansible/latest/installation_guide/index.html
 
 É necessário ter o Ansible instalado na máquina. Para tal, conferir os passos de instalação aqui: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
@@ -93,7 +98,7 @@ Montei um arquivo `Makefile` com os principais comandos do ambiente:
  - `make install` <br>
     Faz a inicialização das ferramentas de IaC e downloads necessário na maquina local, como as collections e roles utilizadas no Ansible;
 
- - `make commom-local`<br>
+ - `make infra`<br>
     Roda tarefas de otimização dos hosts, como desabilitar recursos não utilizados, configurar módulos de kernel, setar hostnames, etc.
 
  - `make k3s`<br>
@@ -105,3 +110,55 @@ Montei um arquivo `Makefile` com os principais comandos do ambiente:
  - `make down` <br>
     Desfaz as instalações realizadas no up. 
 
+### Preparando o ambiente local
+
+Primeiramente, execute o comando `make install` para que as dependencias sejam configuradas e os próximos comandos possam ser executados. 
+### Configurando os clusters
+
+Estou construindo o repositório para ser possível configurar as seguintes distribuições de K8s:
+
+ - k3s (Suse Rancher) - Via collection: tchecode.k3s
+ - k0s (Distro da Mirantes) - Irá ser feito na Issue: https://github.com/users/lucaslehnen/projects/2#card-69541190
+ - k8s com Kubeadm (Vanilla) - Irá ser feito na Issue: https://github.com/users/lucaslehnen/projects/2#card-70037927 
+
+** Por enquanto, funciona apenas em Ubuntu, já que não é o meu foco utilizar outras distros, mas contribuições são bem vindas.
+
+Para configurar um cluster, favor preencher o arquivo de inventário em `ansible\hosts`.
+
+Se tudo certo, já podemos executar o comando `make up` para configurar o ambiente por inteiro, ou fazer por etapas, de acordo com as opções no arquivo `Makefile`.
+
+### Desenvolvimento das roles e collections externas
+
+Quando quero criar uma nova role ou collection e testar nestes playbooks sem precisar subir o código da role ao GIT, ou seja, sem rodar o `ansible-galaxy install requirements.yml`, eu faço um link simbólico das pastas das collections em `~/.ansible/collections/ansible_collections/tchecode/` e das pastas de roles em `~/.ansible/roles/`: 
+
+Exemplo: Linkando a collection tchecode.k3s que estou escrevendo em `/home/lucas/repos/tchecode/k3s`:
+```
+ln -s /home/lucas/repos/tchecode/k3s ~/.ansible/collections/ansible_collections/tchecode
+```
+e um exemplo linkando a role disable-cloud-init:  
+```
+
+```
+
+### Visão geral do ambiente
+
+
+
+Mais detalhes na pasta `docs`.
+
+### Recursos disponíveis 
+
+Os seguintes recursos já são instalados no cluster principal a partir deste repositório:
+
+- Traefik (via K3s)
+- Helm para instalação das demais aplicações; https://github.com/users/lucaslehnen/projects/2#card-69541222
+- Prometheus e Grafana para monitoramento; https://github.com/users/lucaslehnen/projects/2#card-69258284
+- Rook Ceph para o gerenciamento de volumes no Kubernetes; https://github.com/users/lucaslehnen/projects/2#card-69259023
+
+Outras aplicações podem ser instaladas no ambiente, mas a configuração de ambiente delas deve ficar no repositório de código. Por exemplo, uma api de um bot, um blog ou até mesmo stacks de testes.
+
+Os repositórios de aplicações que estarão no ambiente possuirão uma estrutura de CI e CD para a aplicação, diferente deste repositório, onde o CI/CD irá provisionar a infra do laboratório (Packer, Terraform, Ansible, etc).
+
+## Contribuindo
+
+Apesar deste repositório ser voltado para o meu cenário e ambiente, muitas configurações podem ser reaproveitadas e adaptadas aos mais diversos cenários. Portanto, contribuições são muito bem vindas. 

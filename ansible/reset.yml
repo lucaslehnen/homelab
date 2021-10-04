@@ -2,4 +2,6 @@
   user: ubuntu
   become: true
   roles:
-    - {role: k3s-reset, tags: [reset]}
+    - {role: tchecode.k3s.reset, tags: [reset]}
+  vars:
+    ansible_user: ubuntu

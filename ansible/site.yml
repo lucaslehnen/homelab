@@ -1,0 +1,46 @@
+- name: "Requisitos gerais em todos os nós"
+  hosts: all
+  user: ubuntu
+  become: true
+  gather_facts: false
+  roles:
+    - {role: disable-cloud-init, tags: [infra]}
+    - {role: common, tags: [infra]}
+  vars:
+    cidr_lan: 192.168.99.0/24
+
+- name: "Requisitos para os nós do K3s"
+  hosts: k3s_cluster
+  user: ubuntu
+  become: true
+  gather_facts: true
+  roles:
+    - {role: tchecode.k3s.prepare, tags: [k3s]}
+  vars:
+    k3s_version: v1.21.5+k3s1
+
+- name: "Configurando o servidor do K3s - Nós controladores"
+  hosts: k3s_server
+  user: ubuntu
+  become: true
+  gather_facts: false
+  roles:
+    - {role: tchecode.k3s.server, tags: [k3s]}
+    # - {role: helm-install, tags: [k3s]}
+    # - {role: prometheus-stack, tags: [k3s, apps]}
+  vars:
+    server_ip: "{{ hostvars[groups['k3s_server'][0]]['ansible_host'] | default(groups['k3s_server'][0]) }}"
+    ansible_user: ubuntu
+    extra_server_args: "--write-kubeconfig-mode 644"
+    # prometheus_release_name: monitoring
+    # prometheus_release_namespace: monitoring
+
+- hosts: k3s_agent
+  user: ubuntu
+  become: true
+  gather_facts: false
+  roles:
+    - {role: tchecode.k3s.agent, tags: [k3s]}
+  vars:
+    server_ip: "{{ hostvars[groups['k3s_server'][0]]['ansible_host'] | default(groups['k3s_server'][0]) }}"
+    extra_agent_args: ""

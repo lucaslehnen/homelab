@@ -1,0 +1,38 @@
+- name: "UFW - TCP LAN Ports"
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    delete: false
+    src: "{{ cidr_lan }}"
+  with_items:
+    - 22     # SSH
+    - 6443   # Kubernetes API
+    - 10250  # Kubelet metrics
+  notify: reload_ufw
+
+- name: "UFW - UDP LAN Ports"
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: udp
+    delete: false
+  with_items:
+    - 8472  # flannel VXLAN
+  notify: reload_ufw
+
+- name: "UFW - TCP External Ports"
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    delete: false
+  with_items:
+    - 80   # http
+    - 443  # https
+  notify: reload_ufw
+
+- name: "UFW Enable"
+  community.general.ufw:
+    state: enabled
+  notify: reload_ufw

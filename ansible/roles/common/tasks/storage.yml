@@ -1,0 +1,3 @@
+# CUIDADO: Irá formatar o disco /dev/sda atachado via USB nas raspberrys
+# Esse script foi pensado para o meu ambiente e não me responsabilizo pelo uso deste script fora do mesmo
+# - name: ""

@@ -4,18 +4,11 @@ roles:
     src: https://github.com/lucaslehnen/disable-cloud-init
     version: 1.0.1
 
-  - name: k3s-reset
-    src: https://github.com/lucaslehnen/k3s-reset.git
-    version: main
+collections:
+  # - name: kubernetes.core
+  #   version: 2.2.0
 
-  - name: k3s-install
-    src: https://github.com/lucaslehnen/k3s-install
-    version: main
+  # - name: community.general.ufw
 
-  - name: k3s-config-master
-    src: https://github.com/lucaslehnen/k3s-config-master.git
-    version: main
-
-  - name: k3s-config-worker
-    src: https://github.com/lucaslehnen/k3s-config-worker.git
-    version: main
+  - name: tchecode.k3s
+    version: 0.1.0

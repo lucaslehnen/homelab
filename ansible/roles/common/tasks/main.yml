@@ -1,0 +1,5 @@
+---
+# tasks file for raspberrys-common
+- include: hosts.yml
+# - include: ufw.yml https://github.com/users/lucaslehnen/projects/2#card-69584103
+# - include: storage.yml https://github.com/users/lucaslehnen/projects/2#card-69258787

@@ -1,0 +1,3 @@
+ansible/roles/k3s-*
+ansible/roles/helm*
+ansible/roles/prometheus-stack

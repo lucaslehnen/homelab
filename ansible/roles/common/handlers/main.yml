@@ -1,0 +1,10 @@
+---
+- name: Reboot
+  reboot:
+    msg: "Reboot initiated by Ansible"
+  listen: "reboot"
+
+- name: "reload ufw"
+  community.general.ufw:
+    state: reloaded
+  listen: reload_ufw

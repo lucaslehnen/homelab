@@ -1,10 +1,45 @@
-[k3s_master]
-192.168.99.11
+####################  Opção 1 de Cluster Kubernetes: K3s / Rancher ###############################################
+# Define o nó server que recebe o k3s
+[k3s_server]
+192.168.99.31 hostname=kuro-01
 
-[k3s_worker]
-192.168.99.12
-192.168.99.13
+# Define os nós agents do k3s
+[k3s_agent]
+192.168.99.32 hostname=kuro-02
+192.168.99.33 hostname=kuro-03
+192.168.99.24 hostname=kuro-04
 
+# Grupo do k3s
 [k3s_cluster:children]
-k3s_worker
-k3s_master
+k3s_agent
+k3s_server
+
+####################  Opção 2 de Cluster Kubernetes: K0s  ########################################################
+# Define o nó server que recebe o k0s
+[k0s_server]
+# 192.168.99.11 hostname=rp-k0s-01
+
+# Define os nós agents do k0s
+[k0s_agent]
+# 192.168.99.12 hostname=rp-k0s-02
+# 192.168.99.13 hostname=rp-k0s-03
+
+# Grupo do k0s
+[k0s_cluster:children]
+k0s_agent
+k0s_server
+
+####################  Opção 3 de Cluster Kubernetes: "Vanilla" K8s com Kubeadm ####################################
+# Define o nó server que recebe o k0s
+[k8s_server]
+; 192.168.99.21 hostname=rp-k8s-01
+
+# Define os nós agents do k0s
+[k8s_agent]
+; 192.168.99.22 hostname=rp-k8s-02
+; 192.168.99.23 hostname=rp-k8s-03
+
+# Grupo do k0s
+[k8s_cluster:children]
+k8s_agent
+k8s_server

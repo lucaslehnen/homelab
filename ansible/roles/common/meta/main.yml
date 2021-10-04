@@ -1,0 +1,16 @@
+galaxy_info:
+  role_name: common
+  namespace: tchecode
+  author: Lucas Lehnen
+  description: Aplica as modificações comuns aos nós e configurações iniciais específicas do ambiente
+  company: Tchê Code
+  license: MIT
+  min_ansible_version: 2.1
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - ubuntu
+
+dependencies: []
