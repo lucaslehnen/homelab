@@ -16,18 +16,17 @@ ssh-keygen -C "homelab" -f ~/.ssh/homelab -t rsa -b 4096 -q -N ""
 
 Neste exemplo, as chaves ficarão em `~/.ssh/homelab`.
 
-Para facilitar, podemos fazer essa chave ser carregada pelo ssh-agent, assim não precisando citar a mesma nas conexões. 
+A seguir, vamos configurar para que o ssh encontre estas identidades facilmente, editando o arquivo ~/.ssh/config: 
 
-Primeiro, confirme que o agent está rodando:
-
-```shell
-# eval "$(ssh-agent -s)"
-Agent pid 6707
-``` 
-
-Então adicionamos à chave:
 ```
-ssh-add ~/.ssh/homelab
+IdentityFile ~/.ssh/id_rsa
+IdentityFile ~/.ssh/homelab
+```
+
+A partir de então, já deve ser possível conectar ao servidor sem informar uma chave:
+
+```
+ssh lucas@192.168.99.30
 ```
 
 ## Registrando as chaves para acesso SSH remoto

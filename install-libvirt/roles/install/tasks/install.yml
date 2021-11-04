@@ -1,0 +1,49 @@
+- name: "Install libvirt packages"
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - libvirt-daemon
+      - qemu-kvm
+      - bridge-utils
+      - virtinst
+      - libvirt-daemon-system
+
+- name: "Install libvirt tools packages"
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      # - virt-top
+      - libguestfs-tools
+      - libosinfo-bin
+      - qemu-system
+      - virt-manager 
+
+- name: "Loading 'vhost_net' kernel module"
+  community.general.modprobe:
+    name: vhost_net
+    state: present 
+  notify: reboot
+
+- name: "Enabling service" 
+  service:
+    name: libvirtd
+    enabled: yes
+  notify: reboot
+
+- name: "Starting service" 
+  service:
+    name: libvirtd
+    state: started
+
+- name: "Checking the version"  
+  command: virsh version --daemon
+  register: version
+  changed_when: false
+
+- name: ""
+  debug: 
+    msg: "{{ version.stdout }}"

@@ -34,7 +34,38 @@ Aqui especificarei de maneira macro o que estou usando no ambiente:
 
 ![](docs/overview.png)
 
-No meu desktop, eu instalei o Debian, e configurei máquinas virtuais nele. Como as vezes uso este computador para trabalhar ou jogar, o cluster de máquinas virtuais não ficará sempre online (Normalmente estou do meu notebook).
+No meu desktop, eu instalei o Debian, e configurei máquinas virtuais nele para a instalação do Cluster Kubernetes e dos load balancers. 
+Como as vezes uso este computador para trabalhar ou jogar, estas máquinas virtuais não ficarão sempre online.
+
+### Documentação do ambiente
+
+1. Instalação das ferramentas e preparação [[Ler...]](docs/1-install.md)
+2. Configuração de chave SSH [[Ler...]](docs/2-ssh.md)
+3. Cluster K8s com vms no libvirt     
+    - Playbook do Ansible para instalação e configuração do host libvirt [[Ler...]](docs/3-libvirt.md)
+    - Geração das imagens com Packer
+    - Instalação do K8s com Ansible (Provisioner)
+    - Provisionamento das VMs com Terraform    
+- Cluster k8s nas raspberrys
+    - Distribuições escolhidas e pré-requisitos para conexão do Ansible
+    - Configuração das distribuições Linux
+    - Playbook do Ansible para instalação e configuração do Cluster K8s
+
+## Como iniciar
+
+Montei um arquivo `Makefile` com os comandos prontos para a gestão do ambiente. A partir dele as demais ferramentas como o Terraform, Packer e Ansible são acionadas. Obviamente, é necessário ter as ferramentas instaladas na máquina para que os comandos abaixo funcionem. `install`, `up` e `down` são os comandos principais, sendo que os demais já estão embutidos neles.
+
+ - `make install` <br>
+    Faz a inicialização das ferramentas de IaC e downloads necessário na maquina local, como as collections e roles utilizadas no Ansible. ** Não instala as ferramentas, só prepara-as para a execução. A instalação deve ser seguida pela documentação das mesmas e com o auxílio [desta documentação](./docs/1-install.md);
+
+- `make up` <br>
+    Roda todos os comandos na ordem adequada para subir o ambiente COMPLETAMENTE.
+
+ - `make down` <br>
+    Desfaz as instalações realizadas no up. 
+
+ - `make vmserver`<br>
+    Preparar o servidor de VMs;
 
 ## Contribuindo
 

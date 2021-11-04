@@ -1,0 +1,4 @@
+---
+# tasks file for install
+- include: install.yml
+- include: network.yml

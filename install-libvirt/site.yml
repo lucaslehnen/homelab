@@ -1,0 +1,7 @@
+- name: "Instalação do libvirt"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: true
+  roles:    
+    - {role: install, tags: [libvirt]}   

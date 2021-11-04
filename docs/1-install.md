@@ -31,6 +31,33 @@ ansible [core 2.11.6]
   libyaml = True
 ```
 
+### Configurações necessárias nos alvos do Ansible
+
+Apesar do Ansible ser uma ferramenta *agent-less*, as máquinas alvo deverão ter alguns pré-requisitos para rodar os playbooks contidos neste repositório:
+
+- Ser acessível via SSH através de chave RSA previamente registrada. Isso [já esta documentado aqui](./2-ssh.md).;
+- Deve ter um usuário com privilégios para escalar para root sem a necessidade de informar senha. Essa configuração é descrita abaixo.
+
+#### Como escalar para root
+
+Primeiramente, vamos garantir a instalação do sudo:
+
+```
+apt install sudo
+```
+
+Basicamente, precisamos criar um arquivo em `/etc/sudoers.d/` com o seguinte conteúdo:
+```text
+lucas    ALL=(ALL:ALL) NOPASSWD:ALL    
+```
+Deve ter uma linha em branco no final.
+
+Definir as permissões necessárias:
+```
+chmod 440 /etc/sudoers.d/lucas
+```
+Após reiniciar a máquina, você já deve conseguir rodar o comando `sudo su` para escalar os privilégios do seu usuário sem a necessidade de senha.
+
 ## Terraform
 
 Segui os passos em https://www.terraform.io/docs/cli/install/apt.html

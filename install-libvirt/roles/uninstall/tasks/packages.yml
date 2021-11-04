@@ -1,0 +1,41 @@
+- name: "Stoping service" 
+  service:
+    name: libvirtd
+    state: stopped
+    enabled: false
+  notify: reboot
+  ignore_errors: true
+
+- name: "Uninstall libvirt packages"
+  apt:
+    name: "{{ packages }}"
+    state: absent
+    purge: true
+    autoclean: true
+  vars:
+    packages:
+      - libvirt-daemon
+      - qemu-kvm
+      - bridge-utils
+      - virtinst
+      - libvirt-daemon-system
+
+- name: "Uninstall libvirt tools packages"
+  apt:
+    name: "{{ packages }}"
+    state: absent
+    purge: true
+    autoclean: true
+  vars:
+    packages:
+      # - virt-top
+      - libguestfs-tools
+      - libosinfo-bin
+      - qemu-system
+      - virt-manager 
+
+- name: "Disable 'vhost_net' kernel module"
+  community.general.modprobe:
+    name: vhost_net
+    state: absent 
+  notify: reboot

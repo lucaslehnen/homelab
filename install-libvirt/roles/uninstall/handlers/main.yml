@@ -1,0 +1,6 @@
+---
+# handlers file for uninstall
+- name: Reboot
+  reboot:
+    msg: "Reboot initiated by Ansible"
+  listen: "reboot"
