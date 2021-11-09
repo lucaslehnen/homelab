@@ -8,7 +8,13 @@ Observe que estamos instalando na máquina local, sendo que os passos podem dive
 
 ## Ansible
 
-Apenas segui os passos em: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+O Ansible é um gerenciador de configuração, uma ferramenta utilizada para automatizar processos e garantir que os alvos tenham os comandos executados. Ele não armazena estado, porém conseguimos construir validações para simular isto.
+
+Utilizaremos o Ansible em dois cenários:
+- Para lidar com a infra mutável, gerenciando o "estado" de servidores físicos onde não consigo automatizar a criação de uma imagem, e portanto não posso garantir a integridade do que foi descrito no manifesto;
+- Para lidar com infra imutável em conjunto com o Packer e Terraform. Neste caso, ele irá atuar como provisionador, executando as tarefas dentro das máquinas temporárias ("golden images");
+
+Para instalar, apenas segui os passos em: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 
 ```shell
 $ sudo apt update
@@ -31,13 +37,26 @@ ansible [core 2.11.6]
   libyaml = True
 ```
 
+Eu ainda aplico algumas configurações úteis ao Ansible na minha máquina. O conteúdo a seguir pode ser colocado em `~/.ansible.cfg`: 
+
+```ini
+[defaults]
+# saida yaml
+stdout_callback = yaml
+# Usa o stdout_callback nos comandos ad-hoc
+bin_ansible_callbacks = True
+# Para ignorar a checagem de identidade de hosts ssh
+host_key_checking = False
+``` 
+
 ### Configurações necessárias nos alvos do Ansible
 
-Apesar do Ansible ser uma ferramenta *agent-less*, as máquinas alvo deverão ter alguns pré-requisitos para rodar os playbooks contidos neste repositório:
+Apesar do Ansible ser uma ferramenta *agent-less*, as máquinas alvo deverão ter alguns pré-requisitos para que a máquina onde vamos rodar os playbooks contidos neste repositório consiga conectar nela:
 
 - Ser acessível via SSH através de chave RSA previamente registrada. Isso [já esta documentado aqui](./2-ssh.md).;
 - Deve ter um usuário com privilégios para escalar para root sem a necessidade de informar senha. Essa configuração é descrita abaixo.
 
+O Python será instalado como pre-task nas tarefas. 
 #### Como escalar para root
 
 Primeiramente, vamos garantir a instalação do sudo:
@@ -60,7 +79,11 @@ Após reiniciar a máquina, você já deve conseguir rodar o comando `sudo su` p
 
 ## Terraform
 
-Segui os passos em https://www.terraform.io/docs/cli/install/apt.html
+O Terraform é a ferramenta mais utilizada de Iac em tratando-se de cloud. Conseguimos definir de forma declarativa o que teremos de infraestrutura. Ele permite que se atue com infra imutável, onde podemos recriar todo o ambiente em segundos e garantimos que o mesmo está de acordo com os manifestos. 
+
+Usaremos ele tanto nos provedores de cloud quanto no ambiente local de virtualização.
+
+Para instalar, segui os passos em https://www.terraform.io/docs/cli/install/apt.html
 
 Configuração do repositório:
 
@@ -85,7 +108,12 @@ Validando:
 
 ## Packer
 
-Segui os passos em: https://learn.hashicorp.com/tutorials/packer/get-started-install-cli
+O Packer é uma ferramenta destinada à criação de imagens para as máquinas virtuais, seja on-premise ou no cloud. 
+Muito utilizado no cloud, através de um manifesto, ele cria uma máquina temporária, faz as alterações necessárias, gera uma imagem/artefato e então remove os recursos temporários. Essa imagem gerada, depois pode ser utilizada no Terraform ao invés das imagens padrões dos provedores de nuvem. 
+
+Em nosso ambiente, usamos ele tanto para a construção de imagens no sistema de virtualização local, quanto para os provedores de cloud.
+
+Para instalar, segui os passos em: https://learn.hashicorp.com/tutorials/packer/get-started-install-cli
 
 Configuração do repositório: 
 

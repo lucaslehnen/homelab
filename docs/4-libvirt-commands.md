@@ -25,7 +25,7 @@
 ## Outros comandos de vm
 
 - `virsh nodeinfo` - Mostra as informações do nó de virtualização;
-- `osinfoquery os` - Mostra as variantes possíveis de SO;
+- `osinfo-query os` - Mostra as variantes possíveis de SO;
 - `virsh domrename currentname newname` - Renomeia o domínio;
 - `vish save/restore <name>` - Salva/rastaura um estado;
 - `virsh autostart <name> [--disable]` - Inicia ou não a vm ao iniciar o servidor; 

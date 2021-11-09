@@ -1,0 +1,14 @@
+- name: "Instalação do libvirt"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: false         
+  pre_tasks:
+    # Install Python 
+    - raw: sudo apt-get -y install python3-minimal    
+      changed_when: false  
+  roles:        
+    - {role: install, tags: [libvirt]}
+  vars:
+    esxi_iso: "/tmp/esxi1.iso"
+    

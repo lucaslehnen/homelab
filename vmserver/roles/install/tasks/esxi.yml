@@ -1,0 +1,41 @@
+- name: "Instalando o pacote de geração de ISO"
+  apt: 
+    name: genisoimage
+    state: present
+
+- name: "Criando o pool de imagens"
+  file:
+    path: /etc/foo
+    state: directory    
+    owner: foo
+    group: foo
+
+- name: "Montando a ISO original"  
+  mount:
+    path: /mnt/esxi
+    src: {{ esxi_iso }}
+    fstype: iso9660
+    opts: ro,noauto
+    state: mounted
+
+
+    
+
+- name: "Desmontando a ISO original"
+
+- name: "Editando os parâmetros de boot"
+
+- name: "Construindo a nova ISO"
+
+- name: "Desinstalando o pacote de geração de ISO"
+  apt: 
+    name: genisoimage
+    state: absent
+
+- name: "Iniciando o servidor http para o arquivo de kickstart"
+
+- name: "Iniciando a máquina virtual e instalação do ESXI"
+
+- name: "Aguardando a instalação ser concluída"
+
+- name: "Removendo os arquivos de kickstart e servidor http"

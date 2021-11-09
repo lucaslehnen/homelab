@@ -28,21 +28,18 @@ Aqui especificarei de maneira macro o que estou usando no ambiente:
 [X] 1 Switch 5 Portas
 [X] 1 Roteador com USB para driver externo de armazenamento
 [X] 1 SSD's Evo 850 120GB
-[X] 1 PC i7 4790K / 16GB RAM / 120 SSD (expansível)
+[X] 1 PC i7 4790K / 16GB RAM / 120 SSD 
 ```
 ### Desenho do ambiente
 
-![](docs/overview.png)
-
-No meu desktop, eu instalei o Debian, e configurei máquinas virtuais nele para a instalação do Cluster Kubernetes e dos load balancers. 
-Como as vezes uso este computador para trabalhar ou jogar, estas máquinas virtuais não ficarão sempre online.
+![](docs/imgs/overview.png)
 
 ### Documentação do ambiente
 
 1. Instalação das ferramentas e preparação [[Ler...]](docs/1-install.md)
 2. Configuração de chave SSH [[Ler...]](docs/2-ssh.md)
-3. Cluster K8s com vms no libvirt     
-    - Playbook do Ansible para instalação e configuração do host libvirt [[Ler...]](docs/3-libvirt.md)
+3. Cluster K8s com vms no esxi:
+    - Playbook do Ansible para instalação e configuração do host com esxi [[Ler...]](docs/3-esxi.md)
     - Geração das imagens com Packer
     - Instalação do K8s com Ansible (Provisioner)
     - Provisionamento das VMs com Terraform    

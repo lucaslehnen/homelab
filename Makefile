@@ -5,16 +5,16 @@ install-vmserver:
 	ansible-lint
 
 install: install-vmserver
-		
-vmserver:
-	@echo " ---- Instalando o servidor de virtualização ..."	
-	cd install-libvirt && \
+
+up-vmserver:
+	@echo " ---- Instalando o servidor de virtualização ..."
+	cd vmserver && \
 	ansible-playbook -i hosts site.yml
 
-up:	vmserver
+up:	up-vmserver
 
 reset-vmserver:
-	cd install-libvirt && \
+	cd install-esxi && \
 	ansible-playbook -i hosts reset.yml
 
 reset: reset-vmserver	
