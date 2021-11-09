@@ -49,6 +49,18 @@
   debug: 
     msg: "{{ version.stdout }}"
 
-# - name: "Criando o pool de imagens"
-#   shell: 'virsh pool-define-as imagens dir - - - - "/guest_images"'
-#   changed_when: false
+- name: "Verificando pool de imagens"
+  shell: 
+    cmd: 'virsh pool-list --all | grep "imagens"'
+  register: check_pool
+
+- name: "Criando o pool de imagens"
+  shell: 
+    cmd: 'virsh pool-define-as imagens dir - - - - "/var/lib/libvirt/images"'    
+  when: check_pool.stdout.find('imagens') < 0
+
+- name: "Iniciando o pool de imagens"
+  shell: 
+    cmd: 'virsh pool-start imagens'    
+  when: check_pool.stdout.find('inativo') >= 0
+  
