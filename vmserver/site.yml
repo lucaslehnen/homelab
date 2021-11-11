@@ -10,5 +10,16 @@
   roles:        
     - {role: install, tags: [libvirt]}
   vars:
-    esxi_iso: "/tmp/esxi1.iso"
+    esxi_iso: "ftp://192.168.99.1/isos(sda2)/VMware-VMvisor-Installer-7.0U3-18644231.x86_64.iso"    
+    esxi_root_password: "Esxi@2021."
+    esxi_hostname: "esxi7"
+    esxi_ip: "192.168.99.50"
+    esxi_vcpu: 8
+    esxi_ram_mb: "14848"
+    esxi_pool: '/var/lib/libvirt/images'      
+    esxi_disks:
+      - {name: 'disk-boot', pool: 'default', size: 20}
+      - {name: 'disk-ssd', pool: 'default', size: 60}
+      # - {name: 'disk-hdd', pool: '', size: 300}
+    
     

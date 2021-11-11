@@ -2,13 +2,13 @@
 vmaccepteula
 
 # Set the root password for DCUI
-rootpw vm@re01
+rootpw {{ esxi_root_password }}
 
 # Install on the first local disk available on machine
 install --firstdisk --overwritevmfs
 
 # Set the network to Static on the first network adapter
-network --hostname=esxi7 --device=vmnic0 --bootproto=static --ip=192.168.99.50 --netmask=255.255.255.0 --gateway=192.168.99.1 --nameserver=192.168.99.1
+network --hostname={{ esxi_hostname}} --device=vmnic0 --bootproto=static --ip={{ esxi_ip }} --netmask=255.255.255.0 --gateway=192.168.99.1 --nameserver=192.168.99.1
 
 # Reboot
 reboot

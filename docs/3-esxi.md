@@ -39,57 +39,32 @@ Fiz o download da iso do ESXI 7 update 3 no [site da VMWare](https://customercon
 
 ### Customizando a ISO
 
-A forma que achei para automatizar 100% a instalação, exige a modificação da ISO padrão, adicionando o arquivo de *kickstart* dentro da mesma. Se não quiser fazer este passo, pode apenas adicionar o arquivo durante o boot. 
-
-No linux/wsl, instalar o pacote para possuirmos o comando de geração de iso:
-
-```
-sudo apt install 
-```
+A forma que achei para automatizar 100% a instalação, exige a modificação da ISO padrão, adicionando o arquivo de *kickstart* dentro da mesma. Isso também ficou dentro do Ansible. A única coisa que precisamos é ter a imagem original do esxi. Como tem a questão de licença e o download oficial precisa de conta, a iso eu coloquei em um ftp pessoal e a licença é atribuída após a instalação, manualmente, em `Manage/Licensing\Assign Licence`. Tem 60 dias pra usar de boas sem licença, mas lembrando que de qualquer forma é free.
 
 
 
 
-
-Copiei o arquivo ISO para o servidor com o Qemu:
-
-```
- scp VMware-VMvisor-Installer-7.0U3-18644231.x86_64.iso lucas@192.168.99.30:/home/lucas/esxi7.iso
-```
+A partir daí, é só configurar as variáveis do Ansible e rodar o make up-vmserver.
 
 Dentro do servidor com o Qemu, inicializo a VM:
 
 ```
-virt-install \
-  --name=esxi7 \
-  --cpu host-passthrough \
-  --ram 14848 \
-  --vcpus=8 \
-  --os-type linux --os-variant=generic \
-  --cdrom /home/lucas/esxi7.iso \
-  --network bridge=virbr0,model=e1000e \
-  --graphics vnc,listen=0.0.0.0 --video qxl \
-  --disk pool=lucas,size=20,bus=sata,format=qcow2 \
-  --disk pool=lucas,size=60,bus=sata,format=qcow2 \
-  --boot cdrom,hd --noautoconsole --force \
-  --feature kvm_hidden=on --machine q35  
-```
-
-```
-virt-install \
-  --name=esxi7 \
-  --cpu host-passthrough \
-  --ram 14336 \
-  --vcpus=8 \
-  --os-type linux --os-variant=generic \
-  --cdrom /home/lucas/esxi7.iso \
-  --network bridge=virbr0,model=e1000e \
-  --graphics vnc,listen=0.0.0.0 --video qxl \
-  --disk pool=lucas,size=20,bus=sata,format=qcow2 \
-  --disk pool=lucas,size=60,bus=sata,format=qcow2 \
-  --boot cdrom,hd --noautoconsole --force \
-  --feature kvm_hidden=on --machine q35 \
-  --pxe
+- name: "Iniciando a máquina virtual e instalação do ESXI"
+  shell:
+    cmd: "|
+      virt-install \
+      --name={{ esxi_hostname }} \
+      --cpu host-passthrough \
+      --ram {{ esxi_ram_mb }} \
+      --vcpus={{ esxi_cpu }} \
+      --os-type linux --os-variant=generic \
+      --cdrom {{ libvirt_pool_dir }}/esxi7.iso \
+      --network bridge=virbr0,model=e1000e \
+      --graphics vnc,listen=0.0.0.0 --video qxl \
+      --disk pool=ssd-pool,size=20,bus=sata,format=qcow2 \
+      --disk pool=ssd-pool,size=60,bus=sata,format=qcow2 \
+      --boot cdrom,hd --noautoconsole --force \
+      --feature kvm_hidden=on --machine q35"
 ```
 
 Fonte:

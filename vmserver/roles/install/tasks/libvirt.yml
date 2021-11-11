@@ -1,18 +1,18 @@
 - name: "Install libvirt packages"
   apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - libvirt-daemon
-      - qemu-kvm
-      - bridge-utils
-      - virtinst
-      - libvirt-daemon-system
-      - libguestfs-tools
-      - libosinfo-bin
-      - qemu-system
-      - virt-manager     
+    name: "{{ item }}"
+    update_cache: true
+    state: present  
+  with_items:
+    - libvirt-daemon
+    - qemu-kvm
+    - bridge-utils
+    - virtinst
+    - libvirt-daemon-system
+    - libguestfs-tools
+    - libosinfo-bin
+    - qemu-system
+    - virt-manager     
 
 - name: "Loading vhost_net kernel module"
   lineinfile:
@@ -51,16 +51,18 @@
 
 - name: "Verificando pool de imagens"
   shell: 
-    cmd: 'virsh pool-list --all | grep "imagens"'
-  register: check_pool
+    cmd: 'virsh pool-list --all | grep "default"'
+  failed_when: "check_pool_imagens.rc == 2"
+  changed_when: false
+  register: check_pool_imagens
 
 - name: "Criando o pool de imagens"
   shell: 
-    cmd: 'virsh pool-define-as imagens dir - - - - "/var/lib/libvirt/images"'    
-  when: check_pool.stdout.find('imagens') < 0
+    cmd: 'virsh pool-define-as default dir - - - - "{{ libvirt_pool_dir }}"'    
+  when: check_pool_imagens.stdout.find('imagens') < 0
 
 - name: "Iniciando o pool de imagens"
   shell: 
-    cmd: 'virsh pool-start imagens'    
-  when: check_pool.stdout.find('inativo') >= 0
+    cmd: 'virsh pool-start default'    
+  when: check_pool_imagens.stdout.find('inativo') >= 0
   

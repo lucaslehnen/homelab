@@ -7,4 +7,4 @@
 
 - include: libvirt.yml
 - include: network.yml
-# - include: esxi.yml
+- include: esxi.yml

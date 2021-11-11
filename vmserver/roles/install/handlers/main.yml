@@ -4,3 +4,9 @@
   reboot:
     msg: "Reboot initiated by Ansible"
   listen: "reboot"
+
+- name: Restart Nginx
+  systemd:
+    name: nginx
+    state: restarted
+  listen: "restart_nginx"

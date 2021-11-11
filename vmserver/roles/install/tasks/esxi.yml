@@ -1,34 +1,116 @@
-- name: "Instalando o pacote de geração de ISO"
-  apt: 
-    name: genisoimage
+- name: "Verificando necessidade de customizar iso"
+  stat:
+    path: "{{ libvirt_pool_dir }}/esxi7.iso"
+  register: custom_iso
+
+- name: "Gerando a imagem customizada"
+  when: not custom_iso.stat.exists
+  block:
+    - name: "Instalando o pacote de geração de ISO"
+      apt: 
+        name: genisoimage
+        state: present  
+
+    - name: "Criando pasta de montagem"
+      file:
+        path: "/mnt/esxi"
+        state: directory    
+
+    - name: "Download da ISO Original"
+      get_url:
+        url: "{{ esxi_iso }}"
+        dest: /tmp/esxi7.iso      
+
+    - name: "Montando a ISO original"  
+      mount:
+        src: /tmp/esxi7.iso
+        path: /mnt/esxi    
+        fstype: iso9660
+        opts: loop
+        state: mounted
+        fstab: /tmp/tmp.fstab      
+
+    - name: "Copiando os arquivos para edição"
+      copy: 
+        remote_src: true
+        src: "/mnt/esxi/"
+        dest: "/tmp/esxi-custom/"
+        mode: preserve      
+        force: yes      
+
+    - name: "Editando os parâmetros de boot para o kickstart"  
+      replace:
+        path: /tmp/esxi-custom/boot.cfg
+        regexp: 'kernelopt=runweasel cdromBoot'
+        replace: kernelopt=runweasel cdromBoot ks=http://{{ ansible_default_ipv4.address }}/esxi/ks.txt
+
+    - name: "Construindo a nova ISO"
+      shell:
+        cmd: "genisoimage -l -r -J -b isolinux.bin -no-emul-boot -boot-load-size 4 \
+          -boot-info-table -c boot.cat -o {{ libvirt_pool_dir }}/esxi7.iso /tmp/esxi-custom"  
+  
+- name: "Instalando nginx"
+  apt:
+    name: nginx
     state: present
+ 
+- name: "Criando pasta de arquivos kickstart"
+  file:
+    path: '/var/www/html/esxi'
+    mode: 0775
+    owner: www-data
+    state: directory
 
-- name: "Montando a ISO original"  
-  mount:
-    path: /mnt/esxi
-    src: {{ esxi_iso }}
-    fstype: iso9660
-    opts: ro,noauto
-    state: mounted
-
-
+- name: "Copiando arquivo de kickstart do ESXi"
+  template: 
+    src: 'esxi_ks.cfg.j2'
+    dest: '/var/www/html/esxi/ks.txt'
+    owner: www-data
+    mode: 0644    
     
+- name: "Criando os discos para o ESXi"
+  script: >
+    virt_volume.sh
+    -n {{ item.name }}
+    -p {{ item.pool |default('default') }}
+    -c {{ item.capacity }}
+    -f qcow2    
+    -a {{ ansible_check_mode }}
+  with_items: "{{ esxi_disks }}"  
+  register: volume_result
+  changed_when:
+    - volume_result is success
+    - (volume_result.stdout | from_json).changed | default(True)
+  check_mode: False
 
-- name: "Desmontando a ISO original"
+# - name: "Iniciando a máquina virtual e instalação do ESXI"
+#   community.libvirt.virt:
+#     command: define
+#     xml: "{{ lookup('template', 'vm_esxi.xml.j2') }}"
+#     autostart: yes
 
-- name: "Editando os parâmetros de boot"
+# - name: "Desinstalando o pacote de geração de ISO"
+#   apt: 
+#     name: genisoimage
+#     state: absent
 
-- name: "Construindo a nova ISO"
+# - name: "Removendo arquivos temporários"
+#   file: 
+#     path: {{ item }}
+#     state: absent  
+#   with_items:
+#     - "/tmp/tmp.fstab"
+#     - "/tmp/esxi-custom"
 
-- name: "Desinstalando o pacote de geração de ISO"
-  apt: 
-    name: genisoimage
-    state: absent
+# - name: "Aguardando a instalação ser concluída"
 
-- name: "Iniciando o servidor http para o arquivo de kickstart"
+# - name: "Removendo os arquivos de kickstart e servidor http"
 
-- name: "Iniciando a máquina virtual e instalação do ESXI"
-
-- name: "Aguardando a instalação ser concluída"
-
-- name: "Removendo os arquivos de kickstart e servidor http"
+# - name: "Desmontando a ISO original"
+#   mount:
+#     src: {{ esxi_iso }}
+#     path: /mnt/esxi    
+#     fstype: iso9660
+#     opts: loop
+#     state: unmounted
+#     fstab: /tmp/tmp.fstab
