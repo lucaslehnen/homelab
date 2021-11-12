@@ -42,6 +42,9 @@ Fiz o download da iso do ESXI 7 update 3 no [site da VMWare](https://customercon
 A forma que achei para automatizar 100% a instalação, exige a modificação da ISO padrão, adicionando o arquivo de *kickstart* dentro da mesma. Isso também ficou dentro do Ansible. A única coisa que precisamos é ter a imagem original do esxi. Como tem a questão de licença e o download oficial precisa de conta, a iso eu coloquei em um ftp pessoal e a licença é atribuída após a instalação, manualmente, em `Manage/Licensing\Assign Licence`. Tem 60 dias pra usar de boas sem licença, mas lembrando que de qualquer forma é free.
 
 
+ ```
+ echo "allow virbr0" > /etc/qemu/bridge.conf
+ ```
 
 
 A partir daí, é só configurar as variáveis do Ansible e rodar o make up-vmserver.
@@ -53,18 +56,18 @@ Dentro do servidor com o Qemu, inicializo a VM:
   shell:
     cmd: "|
       virt-install \
-      --name={{ esxi_hostname }} \
+      --name=teste \
       --cpu host-passthrough \
-      --ram {{ esxi_ram_mb }} \
-      --vcpus={{ esxi_cpu }} \
-      --os-type linux --os-variant=generic \
-      --cdrom {{ libvirt_pool_dir }}/esxi7.iso \
+      --ram 12000 \
+      --vcpus=8 \
+      --os-type linux --os-variant=generic \      
       --network bridge=virbr0,model=e1000e \
       --graphics vnc,listen=0.0.0.0 --video qxl \
-      --disk pool=ssd-pool,size=20,bus=sata,format=qcow2 \
-      --disk pool=ssd-pool,size=60,bus=sata,format=qcow2 \
+      --disk pool=default,size=20,bus=sata,format=qcow2 \
+      --disk pool=default,size=60,bus=sata,format=qcow2 \
       --boot cdrom,hd --noautoconsole --force \
-      --feature kvm_hidden=on --machine q35"
+      --feature kvm_hidden=on --machine q35 \
+      --debug"
 ```
 
 Fonte:

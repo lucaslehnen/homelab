@@ -15,3 +15,9 @@
   notify: reboot
   vars:
     physical_interface: "{{ physical_interface_cmd.stdout }}"
+
+- name: "Configura a bridge no QEmu"
+  copy:    
+    src: "bridge.conf"
+    dest: "/etc/qemu/bridge.conf"
+    mode: 0440    

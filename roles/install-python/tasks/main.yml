@@ -1,0 +1,11 @@
+---
+# tasks file for install-python
+- name: "Verifica se o python esta instalado"
+  raw: "which python3"
+  changed_when: false
+  register: python_info
+
+- name: "Install Python 3"
+  raw: "sudo apt-get -y install python3-minimal" 
+  changed_when: true
+  when: python_info.stdout.find('not found') >= 0

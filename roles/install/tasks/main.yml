@@ -1,0 +1,17 @@
+---
+# tasks file for install
+- name: "Gathering facts"
+  setup:
+    filter:
+      - 'ansible_default_ipv4'      
+      - 'ansible_distribution_release'
+# Servidor de isos necessárias
+- include: 1_iso_cache_server.yml
+# Instalação dos pacotes, network e pools de armazenamento
+- include: 2_libvirt.yml
+# Compilação do ESXi
+- include: 3_build_esxi.yml
+# Provisionamento do ESXi
+- include: 4_esxi.yml
+# Provisionamento dos nós k8s
+- include: 5_k8s.yml

@@ -1,0 +1,7 @@
+# - name: "Builda a imagem do Debian"
+
+# - name: "Builda a imagem do centOS"
+
+# - name: "Builda a imagem do Ubuntu"
+
+# - name: "Provisiona os nós do K8s no ESXi"

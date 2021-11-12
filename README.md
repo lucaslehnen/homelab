@@ -1,8 +1,9 @@
 # Laboratório pessoal 
 
-<img src="https://img.shields.io/badge/Ansible->%3D2.11.5-red?style=for-the-badge&logo=ansible&logoColor=white" alt="Ansible">
-<img src="https://img.shields.io/badge/Terraform->%3D1.0.7-6a01eb?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform">
-<img src="https://img.shields.io/badge/Packer->%3D1.7.5-blue?style=for-the-badge&logo=packer&logoColor=white" alt="Packer">
+![Ansible](https://img.shields.io/badge/Ansible->%3D2.11.5-red?logo=ansible&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform->%3D1.0.7-6a01eb?logo=terraform&logoColor=white)
+![Packer](https://img.shields.io/badge/Packer->%3D1.7.5-blue?logo=packer&logoColor=white)
+[![wakatime](https://wakatime.com/badge/github/lucaslehnen/homelab.svg)](https://wakatime.com/badge/github/lucaslehnen/homelab)
 
 Este repositório reúne as aplicações e configurações aplicadas no meu laboratório pessoal. 
 Utilizo o lab para testar tecnologias e instalar aplicações de uso diário. 
@@ -11,15 +12,9 @@ A ideia é configurar alguns hosts na nuvem e ter as minhas raspberry's locais r
 
 Apesar deste repositório não ter o intuíto de ser replicável, as partes documentadas visam trazer um exemplar de aplicabilidade de diversos recursos que poderão ser registrados em outros repositórios (Roles do ansible, Helm charts, módulos de Terraform, etc). 
 
-## Roadmap:
-
-Utilizarei o projeto público abaixo para organizar o roadmap de estudos e manter os reviews de recursos que foram testados ou estão no ambiente. 
-
-https://github.com/users/lucaslehnen/projects/3/views/1
-
-*** Se você quiser replicar o ambiente em máquinas virtuais, deve funcionar também, pois estarei testando nas arquiteturas arm64 e amd64.
-
 ## Infraestrutura atual:
+
+![](docs/imgs/overview.png)
 
 Aqui especificarei de maneira macro o que estou usando no ambiente: 
 ```
@@ -30,10 +25,6 @@ Aqui especificarei de maneira macro o que estou usando no ambiente:
 [X] 1 SSD's Evo 850 120GB
 [X] 1 PC i7 4790K / 16GB RAM / 120 SSD 
 ```
-### Desenho do ambiente
-
-![](docs/imgs/overview.png)
-
 ### Documentação do ambiente
 
 1. Instalação das ferramentas e preparação [[Ler...]](docs/1-install.md)
@@ -64,6 +55,13 @@ Montei um arquivo `Makefile` com os comandos prontos para a gestão do ambiente.
  - `make vmserver`<br>
     Preparar o servidor de VMs;
 
+## Roadmap:
+
+Utilizarei o projeto público abaixo para organizar o roadmap de estudos e manter os reviews de recursos que foram testados ou estão no ambiente. 
+
+https://github.com/users/lucaslehnen/projects/3/views/1
+
+*** Se você quiser replicar o ambiente em máquinas virtuais, deve funcionar também, pois estarei testando nas arquiteturas arm64 e amd64.
 ## Contribuindo
 
 Apesar deste repositório ser voltado para o meu cenário e ambiente, muitas configurações podem ser reaproveitadas e adaptadas aos mais diversos cenários. Portanto, contribuições são muito bem vindas, basta fazer um fork e abrir um PR. 

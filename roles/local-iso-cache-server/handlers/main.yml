@@ -1,0 +1,7 @@
+---
+# handlers file for iso-cache-server
+- name: Restart Nginx
+  systemd:
+    name: nginx
+    state: restarted
+  listen: "restart_nginx"

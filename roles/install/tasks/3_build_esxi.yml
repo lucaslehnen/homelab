@@ -1,0 +1,27 @@
+- name: Adiciona a key do repo da Hashicorp
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Adiciona o repo
+  apt_repository:   
+    repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release | lower }} main
+    state: present
+
+- name: Instala o Packer e o git
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+    state: present
+  vars:
+    packages: 
+      - packer
+      - git
+
+# - name: Clona o repositório
+
+# - name: Builda a imagem do ESXI
+
+
+# - name: Registra o volume no pool
+  

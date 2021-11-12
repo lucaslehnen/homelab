@@ -1,0 +1,51 @@
+- name: "Prepara o ambiente para a execução do playbook"
+  # Requisitos:
+  # - Permitir escalonar para root
+  # - Conectar via SSH sem necessidade de inserir senha
+  hosts: all
+  user: lucas
+  become: true
+  gather_facts: false
+  roles:  
+    - { name: install-python, tags: [pre]} 
+
+- name: "Configurando servidor de cache para as imagens"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: false
+  roles:
+    - { name: local-iso-cache-server, tags: [cache-server]}    
+  vars:
+    isos_mirrors:
+      - { url: "ftp://192.168.99.1/isos(sda2)/VMware-VMvisor-Installer-7.0U3-18644231.x86_64.iso", 
+          checksum: "md5:482fcb20aef71740e88d0c360cd6b277" }
+      - { url: "https://cdimage.debian.org/cdimage/cloud/bullseye/20211011-792/debian-11-generic-amd64-20211011-792.qcow2", 
+          checksum: "sha512:f84939a248d629ec63b78d05b08351dd91c83daa878e515bdf410742c2afb768ac57037a31346868829c53243bee0a57fd2bc0151de2ebf914cdf9b553d9258f" }
+
+- name: "Preparando a instalação do servidor de VMs"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: false
+  handlers:
+    - name: Reboot
+      reboot: 
+        msg: "Reboot initiated by Ansible"
+      listen: "reboot"
+  roles:        
+    - { role: libvirt-host, tags: [libvirt, esxi] }
+  vars:
+    # esxi_root_password: "Esxi@2021."
+    # esxi_hostname: "esxi7"
+    # esxi_ip: "192.168.99.50"
+    # esxi_vcpu: 8
+    # esxi_ram_mb: "14848"
+    # esxi_pool: '/var/lib/libvirt/images'      
+    # esxi_boot_disks: ''
+    # esxi_aditional_disks:      
+    #   - {name: 'disk-ssd', pool: 'default', size: 60}
+      # - {name: 'disk-hdd', pool: '', size: 300}
+
+    
+    
