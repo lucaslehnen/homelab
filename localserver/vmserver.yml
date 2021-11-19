@@ -1,0 +1,36 @@
+- name: "Prepara o ambiente para a execução do playbook"
+  # Requisitos:
+  # - Permitir escalonar para root
+  # - Conectar via SSH sem necessidade de inserir senha
+  hosts: all
+  user: lucas
+  become: true
+  gather_facts: false  
+  roles:  
+    - { name: install-python, tags: [pre]} 
+
+- name: "Configurando servidor de cache para as imagens"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: false
+  roles:
+    - { name: local-iso-cache-server, tags: [cache-server]}          
+  vars_files:
+    - env.sample.yml
+
+- name: "Preparando e instalando o servidor de VMs"
+  hosts: vmserver
+  user: lucas
+  become: true
+  gather_facts: false
+  handlers:
+    - name: Reboot
+      reboot: 
+        msg: "Reboot initiated by Ansible"
+      listen: "reboot"
+  roles:        
+    - { role: tchecode.libvirt.install, tags: [libvirt, vmserver] }
+    - { role: build-esxi, tags: [ esxi, vmserver] } 
+  vars_files:
+    - env.sample.yml

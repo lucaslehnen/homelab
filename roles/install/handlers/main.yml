@@ -1,7 +1,0 @@
----
-# handlers file for install
-- name: Reboot
-  reboot:
-    msg: "Reboot initiated by Ansible"
-  listen: "reboot"
-

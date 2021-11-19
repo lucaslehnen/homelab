@@ -14,37 +14,64 @@ Apesar deste repositório não ter o intuíto de ser replicável, as partes docu
 
 ## Infraestrutura atual:
 
+Aqui especificarei de maneira macro o que estou usando no ambiente: 
+
 ![](docs/imgs/overview.png)
 
-Aqui especificarei de maneira macro o que estou usando no ambiente: 
 ```
-[X] 2 Raspberry 4 Model B - 2 GB RAM c/ MicroSD de 32 GB
-[X] 1 Raspberry 4 Model B - 4 GB RAM c/ MicroSD de 128 GB
-[X] 1 Switch 5 Portas
-[X] 1 Roteador com USB para driver externo de armazenamento
-[X] 1 SSD's Evo 850 120GB
-[X] 1 PC i7 4790K / 16GB RAM / 120 SSD 
+- 2 Raspberry 4 Model B - 2 GB RAM c/ MicroSD de 32 GB
+- 1 Raspberry 4 Model B - 4 GB RAM c/ MicroSD de 128 GB
+- 1 Switch 5 Portas
+- 1 Roteador com USB para driver externo de armazenamento
+- 2 SSD's Evo 850 120GB
+- 120 GB HDD
+- 1 PC i7 4790K / 16GB RAM 
 ```
 ### Documentação do ambiente
 
-1. Instalação das ferramentas e preparação [[Ler...]](docs/1-install.md)
-2. Configuração de chave SSH [[Ler...]](docs/2-ssh.md)
-3. Cluster K8s com vms no esxi:
-    - Playbook do Ansible para instalação e configuração do host com esxi [[Ler...]](docs/3-esxi.md)
+1. Motivadores e objetivos [[Ler...]](docs/objetivos.md)
+2. Cluster K8s no ESXi:
+    - Instalação e configuração do host com ESXi [[Ler...]](docs/esxi.md)
     - Geração das imagens com Packer
     - Instalação do K8s com Ansible (Provisioner)
-    - Provisionamento das VMs com Terraform    
-- Cluster k8s nas raspberrys
+    - Provisionamento das VMs com Terraform
+    - Alternativas de virtualização
+3. Cluster k8s nas Raspberrys
     - Distribuições escolhidas e pré-requisitos para conexão do Ansible
     - Configuração das distribuições Linux
     - Playbook do Ansible para instalação e configuração do Cluster K8s
+4. Ambiente na cloud
+    - OCI        
+        - Configuração da conta
+        - Recursos utilizados
+        - Cluster Nomad
+    - AWS
+        - Configuração da conta
+        - Recursos utilizados
+    - Azure
+        - Configuração da conta
+        - Recursos utilizados    
+    - GCP
+        - Configuração da conta
+        - Recursos utilizados
+    
+5. Documentação complementar
+    - Ansible
+    - Terraform
+    - Packer
+    - Linux
+        - SSH
+        - Sudo
 
 ## Como iniciar
 
-Montei um arquivo `Makefile` com os comandos prontos para a gestão do ambiente. A partir dele as demais ferramentas como o Terraform, Packer e Ansible são acionadas. Obviamente, é necessário ter as ferramentas instaladas na máquina para que os comandos abaixo funcionem. `install`, `up` e `down` são os comandos principais, sendo que os demais já estão embutidos neles.
+Montei um arquivo `Makefile` com os comandos prontos para a gestão do ambiente. A partir dele as demais ferramentas como o Terraform, Packer, Ansible e scripts são acionadas. É necessário apenas que o `make` esteja disponível para que o restante das ferramentas sejam instalas na máquina. `install`, `up` e `down` são os comandos principais, sendo que os demais já estão embutidos neles.
 
  - `make install` <br>
-    Faz a inicialização das ferramentas de IaC e downloads necessário na maquina local, como as collections e roles utilizadas no Ansible. ** Não instala as ferramentas, só prepara-as para a execução. A instalação deve ser seguida pela documentação das mesmas e com o auxílio [desta documentação](./docs/1-install.md);
+    Faz a instalação e inicialização das ferramentas de IaC, downloads necessários na maquina local, como as collections e roles utilizadas no Ansible.;
+
+- `make configure` <br>
+    Roda o script de configuração das variáveis do ambiente    
 
 - `make up` <br>
     Roda todos os comandos na ordem adequada para subir o ambiente COMPLETAMENTE.
@@ -52,9 +79,9 @@ Montei um arquivo `Makefile` com os comandos prontos para a gestão do ambiente.
  - `make down` <br>
     Desfaz as instalações realizadas no up. 
 
- - `make vmserver`<br>
-    Preparar o servidor de VMs;
+Alguns prefixos após os comandos up e down podem acionar apenas parte da automação, como por exemplo o `make up-esxi`, que irá instalar apenas as máquinas virtuais do ESXi.
 
+A automação foi escrita para que `up` e `down` sejam idempotentes, ou seja, não tem problema fazer a chamada mais de uma vez.
 ## Roadmap:
 
 Utilizarei o projeto público abaixo para organizar o roadmap de estudos e manter os reviews de recursos que foram testados ou estão no ambiente. 

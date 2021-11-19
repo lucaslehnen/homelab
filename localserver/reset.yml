@@ -3,5 +3,6 @@
   user: lucas
   become: true
   gather_facts: true
-  roles:    
-    - {role: uninstall, tags: [reset-libvirt]}   
+  roles:            
+    - tchecode.libvirt.reset
+    - uninstall-cache

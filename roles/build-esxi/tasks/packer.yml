@@ -1,3 +1,4 @@
+---
 - name: Adiciona a key do repo da Hashicorp
   apt_key:
     url: https://apt.releases.hashicorp.com/gpg
@@ -17,11 +18,3 @@
     packages: 
       - packer
       - git
-
-# - name: Clona o repositório
-
-# - name: Builda a imagem do ESXI
-
-
-# - name: Registra o volume no pool
-  

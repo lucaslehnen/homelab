@@ -1,9 +1,0 @@
----
-# tasks file for libvirt-host
-- name: "Gathering facts"
-  setup:
-    filter:
-      - 'ansible_default_ipv4'            
-- include: install.yml
-- include: storage.yml
-- include: network.yml

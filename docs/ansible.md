@@ -2,16 +2,22 @@
 
 # Instalação das ferramentas
 
-Eu uso Ubuntu, então testei os passos a seguir tanto na distribuição quanto no WSL do Windows 11. 
+Eu uso Ubuntu, Debian e Windows. Então o material deve funcionar tanto nas distribuições quanto no WSL do Windows 11. 
 
-Observe que estamos instalando na máquina local, sendo que os passos podem divergir um pouco se for configurar em uma ferramenta de CI.
+Observe que estamos instalando nas máquinas, sendo que os passos podem divergir um pouco se for configurar em uma ferramenta de CI.
 
 ## Ansible
 
 O Ansible é um gerenciador de configuração, uma ferramenta utilizada para automatizar processos e garantir que os alvos tenham os comandos executados. Ele não armazena estado, porém conseguimos construir validações para simular isto.
 
+*Porque utilizar?*
+
+Tem muitos módulos, tanto *built-in* quanto da comunidade e o fato de exigir apenas uma conexão SSH, sem agente instalado, facilita demais o gerenciamento.
+
 Utilizaremos o Ansible em dois cenários:
+
 - Para lidar com a infra mutável, gerenciando o "estado" de servidores físicos onde não consigo automatizar a criação de uma imagem, e portanto não posso garantir a integridade do que foi descrito no manifesto;
+
 - Para lidar com infra imutável em conjunto com o Packer e Terraform. Neste caso, ele irá atuar como provisionador, executando as tarefas dentro das máquinas temporárias ("golden images");
 
 Para instalar, apenas segui os passos em: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
@@ -23,7 +29,7 @@ $ sudo add-apt-repository --yes --update ppa:ansible/ansible
 $ sudo apt install ansible
 ```
 
-Para checar se esta ok: 
+Para verificar se está ok: 
 ```shell
 # ansible --version
 ansible [core 2.11.6] 
@@ -37,7 +43,7 @@ ansible [core 2.11.6]
   libyaml = True
 ```
 
-Eu ainda aplico algumas configurações úteis ao Ansible na minha máquina. O conteúdo a seguir pode ser colocado em `~/.ansible.cfg`: 
+Eu ainda aplico algumas configurações globais que acho úteis. O conteúdo a seguir pode ser colocado em `~/.ansible.cfg`: 
 
 ```ini
 [defaults]
@@ -51,7 +57,7 @@ host_key_checking = False
 
 ### Configurações necessárias nos alvos do Ansible
 
-Apesar do Ansible ser uma ferramenta *agent-less*, as máquinas alvo deverão ter alguns pré-requisitos para que a máquina onde vamos rodar os playbooks contidos neste repositório consiga conectar nela:
+Apesar do Ansible ser uma ferramenta *agent-less*, as máquinas alvo (*managed nodes*) deverão ter alguns pré-requisitos para que a máquina onde vamos rodar os playbooks (*control node*) contidos neste repositório consiga conectar nela:
 
 - Ser acessível via SSH através de chave RSA previamente registrada. Isso [já esta documentado aqui](./2-ssh.md).;
 - Deve ter um usuário com privilégios para escalar para root sem a necessidade de informar senha. Essa configuração é descrita abaixo.

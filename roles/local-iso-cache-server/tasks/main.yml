@@ -16,8 +16,9 @@
   template:
     src: "nginx_isos.conf.j2"
     dest: "/etc/nginx/sites-available/default"
-    force: True
-    mode: preserve  
+    force: true    
+    mode: preserve 
+    backup: true 
   notify: restart_nginx
 
 - name: "Baixando imagens dos mirrors para o servidor local"

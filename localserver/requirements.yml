@@ -1,0 +1,8 @@
+---
+roles:
+ 
+collections: 
+  - name: community.general    
+  - name: https://github.com/lucaslehnen/tchecode.libvirt.git
+    type: git
+    version: main

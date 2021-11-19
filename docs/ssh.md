@@ -4,7 +4,7 @@
 
 Ao criar um par de chaves SSH e registrar a pública nos servidores, podemos conectar a partir da nossa máquina (ou de onde for necessário) sem solicitar senhas.
 
-Para que o playbook Ansible consiga conectar nos alvos, é necessário que eles tenham esta chave pública registrada. Os passos para configurá-la estão abaixo:
+Os passos para configurá-la estão abaixo:
 
 ## Criando as chaves
 
@@ -53,7 +53,7 @@ Now try logging into the machine, with:   "ssh 'lucas@192.168.99.30'"
 and check to make sure that only the key(s) you wanted were added.
 ```
 
-Como descrito, a partir de agora, o servidor pode ser acessado sem senha, apenas validando a chave RSA. O mesmo ainda pode ser acessado via senha, mas a configuração para desabilitar este comportamento podemos deixar para a automação com Ansible.
+Como descrito, a partir de agora, o servidor pode ser acessado sem senha, apenas validando a chave RSA. 
 
 ---
 [Voltar à raiz](../README.md)

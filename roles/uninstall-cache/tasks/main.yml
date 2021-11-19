@@ -1,0 +1,49 @@
+---
+# tasks file for uninstall-cache
+- name: "Removendo as imagens de cache"
+  file: 
+    path: "/var/www/isos"
+    state: absent
+
+- name: "Procurando arquivo de configuração anterior"
+  find:
+    recurse: no
+    paths:
+    - "{{ '/etc/nginx/sites-available/default' | dirname }}"
+    patterns:
+    - '{{ "/etc/nginx/sites-available/default" | basename }}\..*~'
+    use_regex: true
+  register: find_backup
+
+- name: Seleciona o último backup
+  set_fact:
+    latest_backup: "{{ (find_backup.files | sort(attribute='mtime') | last).path }}"
+  when: find_backup.files|length > 0
+
+- name: Show it
+  debug:
+    var: latest_backup    
+  when: find_backup.files|length > 0
+
+- name: Restaurando a configuração original do Nginx
+  copy:
+    src: "{{ latest_backup }}"
+    remote_src: true
+    dest: "/etc/nginx/sites-available/default"
+  notify: reboot
+  when: find_backup.files|length > 0
+
+- name: Removendo arquivos de backup 
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  with_items: >
+    {{ find_backup.files }}
+  when: find_backup.files|length > 0
+
+- name: "Desinstalando o nginx"
+  apt:
+    name: "nginx"
+    state: absent
+    purge: true
+    autoclean: true  
