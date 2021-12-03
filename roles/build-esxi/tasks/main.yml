@@ -1,9 +1,0 @@
----
-# tasks file for build-esxi
-- name: "Gathering facts"
-  setup:
-    filter:
-      - 'ansible_distribution_release'
-# - include: packer.yml # issue https://github.com/lucaslehnen/packer-esxi-qemu/issues/1    
-# - include: build.yml
-- include: libvirt.yml

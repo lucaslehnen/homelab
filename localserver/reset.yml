@@ -1,8 +1,0 @@
-- name: "Revertendo instalação do libvirt"
-  hosts: vmserver
-  user: lucas
-  become: true
-  gather_facts: true
-  roles:            
-    - tchecode.libvirt.reset
-    - uninstall-cache

@@ -1,0 +1,44 @@
+- name: "Lendo o arquivo de configuração e carregando as variáveis e máquinas alvo..."
+  connection: local
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "Adiciona o host do Qemu no inventário..."
+      when: qemu.host is defined
+      add_host:
+        name: "{{ qemu.host }}"
+        groups: "qemu"
+        bridge_network: "{{ qemu.bridge_network }}"
+      changed_when: false
+
+    - name: "Adiciona o host do VMWare no inventário..."
+      when: vmware.host is defined
+      add_host:
+        name: "{{ vmware.host }}"
+        groups: vmware
+
+- name: "Instala o Python nas máquinas que já estão provisionadas"
+  hosts: remote
+  user: lucas
+  become: true
+  gather_facts: false
+  tasks:
+    - name: "Instalando o python"
+      import_tasks: ../common/install_python.yml
+
+- name: "Instala o Qemu como emulador e as máquinas virtuais direto nele"
+  hosts: qemu
+  user: lucas
+  become: true
+  gather_facts: false
+  roles:
+    - {role: tchecode.libvirt.install, tags: [libvirt, emulation]}
+
+- name: "Instala o VMWare como virtualizador e o ESXi dentro de uma VM"
+  hosts: vmware
+  user: lucas
+  become: true
+  gather_facts: false
+  roles:
+    - tchecode.vmware.install_ws
+    - tchecode.vmware.install_esxi

@@ -1,0 +1,22 @@
+---
+# - name: "Clona o repositório da golden image"
+#   git:
+#     repo: 'https://github.com/lucaslehnen/packer-esxi-qemu.git'
+#     dest: "{{ esxi.build_dir }}"
+#     single_branch: yes
+#     version: main
+
+# - name: Configura os parâmetros para o build
+#   template:
+#     src: variables.pkrvars.hcl.j2
+#     dest: "{{ esxi.build_dir }}/variables.pkrvars.hcl"
+
+# - name: Builda a imagem do ESXI
+#   shell:
+#     chdir: "{{ esxi.build_dir }}"
+#     cmd: 'packer build -var-file="variables.pkrvars.hcl" .'      
+#   register: esxi_build
+
+# - name: Show info Build Output
+#   debug:
+#     msg: "{{ esxi.build.stdout }}"

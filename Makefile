@@ -1,27 +1,16 @@
 install:
-	@echo " ---- Atualizando dependências..."	
-	ansible-galaxy install -r requirements.yml --force && \
-	ansible-lint
+	@echo " ---- Atualizando dependências do Ansible (Roles e Collections) ..."
+	cd local && \
+	ansible-galaxy install -r requirements.yml --force
 
-up-cacheserver:
-	@echo " ---- Instalando o servidor de cache das isos ..."	
-	ansible-playbook -i hosts vmserver.yml -t cache-server
+up-vms:				
+	@echo " ---- Rodando o playbook ..."
+	cd local && \
+	ansible-playbook -i hosts.yml site.yml --extra-vars "@../env.yml"
 
-up-libvirt:
-	@echo " ---- Instalando o libvirt ..."	
-	ansible-playbook -i hosts vmserver.yml -t libvirt
-
-up-esxi:
-	@echo " ---- Instalando o esxi ..."	
-	ansible-playbook -i hosts vmserver.yml -t esxi
-
-up-vmserver: 
-	@echo " ---- Instalando o servidor de virtualização ..."		
-	ansible-playbook -i hosts vmserver.yml -t vmserver
-
-up:	
-	@echo " ---- Subindo tudo ..."	
-	ansible-playbook -i hosts vmserver.yml 
+up:	up-vms	
 
 reset:
-	ansible-playbook -i hosts reset.yml
+	@echo " ---- Revertendo as alterações do playbook ..."
+	cd local && \
+	ansible-playbook -i hosts.yml reset.yml --extra-vars "@../env.yml"

@@ -29,9 +29,9 @@ Coloquei a interface LXDE nele, pois como resolvi fazer tudo manualmente, quero 
 Algumas coisas que já fiz no processo de instalação do Debian ou no pós-instalação (manual):
  - Desmarquei todos os pacotes extras na instalação, deixei apenas o servidor ssh e o LXDE;
  - Defini o usuário `lucas` com a senha que queria;
- - Setei o IP para estático `192.168.99.30`;
+ - Setei o IP para estático `192.168.99.30` (removi o pacote connman que veio no lxde, para deixar a gestão pelo arquivo );
  - Registrei a chave SSH que eu havia criado na minha máquina. Detalhes [aqui](./ssh.md).
- - Ajustei os privilégios de escalação para root, conforme especificado [aqui](./sudo.md). 
+ - Ajustei os privilégios de escalação para root, conforme especificado [aqui](./sudo.md).  
 
 Com isso, já posso executar o Ansible futuramente. 
 
@@ -82,42 +82,36 @@ Fiz o download da iso do ESXI 7 update 3 no [site da VMWare](https://customercon
 
 ![](imgs/download-esxi.png)
 
-Montei um arquivo de kickstart para a instalação, junto com um template Packer para outras alternativas de virtualização do ESXi. 
+Montei um arquivo de kickstart para a instalação, junto com um template Packer para outras alternativas de virtualização do ESXi. Esse arquivo pode ser utilizado, de modo a acelerar a instalação, mas como o processo esta manual, não é necessário utiliza-lo. 
+
 Mais detalhes no repositório do [template Packer para o ESXi](https://github.com/lucaslehnen/packer-esxi).
 
 ## Criando a VM para o ESXi
 
-## Sobre o IaC
+Para a VM do ESXi, dediquei os seguintes recursos:
 
-Montei um playbook Ansible para a instalação do libvirt e qemu, preparando a VM para o ESXI. Ele faz as seguintes alterações: 
-- Instala um Ngix para usar como servidor http para as isos de instalação
-- Usando a collection do Ansible [tchecode.libvirt](https://github.com/lucaslehnen/tchecode.libvirt):
-  - Instala os pacotes do libvirt;
-  - Instala pacotes de utilitários para administração de vms no qemu;
-  - Configura uma rede bridge para uso nas vms (assim consigo usar a minha rede LAN);
-- <s>Usando o template Packer em https://github.com/lucaslehnen/packer-esxi-qemu:
-   - Clona o repositório do template;
-   - Builda uma imagem `qcow2` do ESXi;</s>
-   - Não está funcionando. Em seu lugar, automatizei os passos que o Packer faria manualmente no Ansible com libvirt. O resultado ainda é o mesmo, porém, o libvirt cria a VM de uma maneira distinta, fazendo com que a mesma funcione, diferente do builder do Packer. Esse mesmo comando já roda a VM. No futuro, quando conseguir executar com o Packer, a VM pode ser provisionada com Terraform;  
+  - Disco SCSI de 20 GB salvo no SSD de 120GB;
+  - Disco SCSI de 60 GB salvo no SSD de 120GB;
+  - Disco SCSI de 128 GB salvo no HDD;
+  - Memória de 13,6 GB (Recomendação máxima do Player)
+  - 8 núcleos de CPU;
 
-Separei alguns comandos úteis para a administração da vm do libvirt [aqui](./4-libvirt-commands.md). 
+Coloquei a ISO que baixei do ESXi no slot de CDROM e fiz o processo de instalação. 
+## Instalando e configurando o ESXi
 
+Ao iniciar a VM, e pressionar `shift+o`, é possível editar o comando de instalação. Ali pode ser inserido o arquivo de kickstart ou configuração de ip estático. 
 
-### Customizando a ISO
+Mais detalhes no repositório do [template Packer para o ESXi](https://github.com/lucaslehnen/packer-esxi).
 
-A forma que achei para automatizar 100% a instalação, exige a modificação da ISO padrão, adicionando o arquivo de *kickstart* dentro da mesma. Isso também ficou dentro do Ansible. 
+A instalação foi realizada no disco de 20GB e define o IP `192.168.99.50` para o host.
 
-A única coisa que precisamos é ter a imagem original do esxi. Como tem a questão de licença e o download oficial precisa de conta, a iso eu coloquei em um ftp pessoal e a licença é atribuída após a instalação, manualmente, em `Manage/Licensing\Assign Licence`. Tem 60 dias pra usar de boas sem licença, mas lembrando que de qualquer forma é free.
+Uma vez instalado, o endereço https://192.168.99.50/ui/#/host pode ser acessado para gerenciamento.
 
-A partir daí, é só configurar as variáveis do Ansible e rodar o make up-vmserver.
+![](imgs/esxi_painel.png)
 
-https://www.qemu.org/docs/master/system/invocation.html
+Em `Actions->Services->Enable Secure Shell` é possível habilitar o acesso SSH. Ele será necessário para algumas operações.
 
-
-Fonte:
-
-https://www.grottedubarbu.fr/nested-virtualization-esxi-kvm/
-
+A licença é atribuída após a instalação, em `Manage->Licensing->Assign Licence`. Tem 60 dias pra usar de boas sem licença, mas lembrando que de qualquer forma é licença é gratuita, voce pega ela no mesmo local que fez o download da ISO.
 
 ---
 [Voltar à raiz](../README.md)
