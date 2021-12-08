@@ -4,11 +4,11 @@
   gather_facts: false
   tasks:
     - name: "Adiciona o host do Qemu no inventário..."
-      when: qemu.host is defined
+      when: kvm_qemu.host is defined
       add_host:
-        name: "{{ qemu.host }}"
-        groups: "qemu"
-        bridge_network: "{{ qemu.bridge_network }}"
+        name: "{{ kvm_qemu.host }}"
+        groups: "kvm_qemu"
+        bridge_network: "{{ kvm_qemu.bridge_network }}"
       changed_when: false
 
     - name: "Adiciona o host do VMWare no inventário..."
@@ -18,7 +18,7 @@
         groups: vmware
 
 - name: "Revertendo modificações nos servidores de Qemu"
-  hosts: qemu
+  hosts: kvm_qemu
   user: lucas
   become: true
   gather_facts: true

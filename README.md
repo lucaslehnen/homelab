@@ -12,66 +12,47 @@ A ideia é configurar alguns hosts na nuvem e ter as minhas raspberry's locais r
 
 Apesar deste repositório não ter o intuíto de ser replicável, as partes documentadas visam trazer um exemplar de aplicabilidade de diversos recursos que poderão ser registrados em outros repositórios (Roles do ansible, Helm charts, módulos de Terraform, etc). 
 
-## Infraestrutura atual:
-
-Aqui especificarei de maneira macro o que estou usando no ambiente: 
-
-![](docs/imgs/overview.png)
-
-```
-- 2 Raspberry 4 Model B - 2 GB RAM c/ MicroSD de 32 GB
-- 1 Raspberry 4 Model B - 4 GB RAM c/ MicroSD de 128 GB
-- 1 Switch 5 Portas
-- 1 Roteador com USB para driver externo de armazenamento
-- 2 SSD's Evo 850 120GB
-- 120 GB HDD
-- 1 PC i7 4790K / 16GB RAM 
-```
 ### Documentação do ambiente
 
-0. Motivadores e objetivos [...Ler...](docs/objetivos.md)
-1. Configurações [...Ler...](docs/config.md)
-2. Cluster K8s no meu desktop:
-    - Instalação e configuração [...Ler...](docs/desktop.md)
-    - Templates Packer [...Ler...](docs/pkr-k8s.md)
-    - Instalação do K8s com Ansible 
-    - Provisionamento das VMs com Terraform    
-3. Cluster k8s nas Raspberrys
-    - Distribuições escolhidas e pré-requisitos para conexão do Ansible
-    - Configuração das distribuições Linux
-    - Playbook do Ansible para instalação e configuração do Cluster K8s
-4. Ambiente na cloud
-    - OCI        
-        - Configuração da conta
-        - Recursos utilizados
-        - Cluster Nomad
-    - AWS
-        - Configuração da conta
-        - Recursos utilizados
-    - Azure
-        - Configuração da conta
-        - Recursos utilizados
-    - GCP
-        - Configuração da conta
-        - Recursos utilizados
-    
-5. Documentação complementar
+- Motivadores e objetivos [...Ler...](docs/objetivos.md)
+- Configurações [...Ler...](docs/config.md)
+- Ambiente local:
+    - Overview da infra local [...Ler...](docs/infra_local.md)    
+    - Instalação e configuração do Desktop [...Ler...](docs/desktop.md)
+    - Instalação e configuração das Raspberrys
+- Ambiente na cloud:
+    - Overview das Clouds
+    - Instalação e configuração da OCI (Oracle Cloud Infrastructure)
+    - Instalação e configuração da AWS (Amazon Web Services)
+    - Instalação e configuração da Azure (Microsoft)
+    - Instalação e configuração da GCP (Google Cloud Platform)
+- Documentação complementar
     - Configuração de sudo  [...Ler...](docs/sudo.md)    
     - Configuração do SSH  [...Ler...](docs/ssh.md)
+    - Instalação das ferramentas [...Ler...](docs/install.md)
 
-## Como iniciar
+## Como subir o ambiente
 
-Inicialmente, precisamos apenas do `make`. Se não tens em sua distro, vamos garantir que o mesmo esteja disponível: 
+Um playbook Ansible controla o lançamento de todo o ambiente descrito na documentação. Ou seja, os ambientes de virtualização nas máquinas locais, a instalação dos clusters e a preparação da nuvem para receber as aplicações. 
+
+As aplicações em si, ficam em repositórios específicos de lançamento no Github.
+No CI/CD destes repositórios de apps é que será configurado o deploy para lançamento das mesmas. 
+
+Antes de executar o playbook, são necessários alguns passos:
 
 ```
 $ apt install build-essential
 ```
 
-Além disso, as máquinas alvo já devem estar com o acesso SSH configurado. Consultar a documentação para detalhes.
+As máquinas alvo já devem estar com o acesso SSH configurado, conforme [esta documentação](docs/ssh.md)
 
 O Ansible, Terraform e Packer também são requeridos. Informações de como instalá-los estão [aqui](doc/install.md).
 
-A partir do arquivo `Makefile`, as demais ferramentas como o Terraform, Packer, Ansible e scripts são acionadas. `install`, `up` e `down` são os comandos principais, sendo que os demais já estão embutidos neles.
+As configurações estão centralizadas no arquivo `env.yml`. Disponibilizei um arquivo sample junto no repositório para auxiliar. 
+
+Mais detalhes sobre as opções a serem configuradas podem ser vistas [aqui](docs/config.md).
+
+A partir do arquivo `Makefile`, as demais ferramentas como o Terraform, Packer, Ansible e scripts são acionadas. `install`, `up` e `down` são os comandos principais, sendo que comandos parciais podem ser embutidos neles.
 
  - `make install` <br>
     É a primeira coisa a se fazer, provavelmente você só vai fazê-lo uma vez.    
@@ -83,15 +64,9 @@ A partir do arquivo `Makefile`, as demais ferramentas como o Terraform, Packer, 
  - `make down` <br>
     Desfaz as instalações realizadas no up. 
 
-Alguns prefixos após os comandos up e down podem acionar apenas parte da automação, como por exemplo o `make up-esxi`, que irá instalar apenas as máquinas virtuais do ESXi.
+Alguns prefixos após os comandos up e down podem acionar apenas parte da automação, como por exemplo o `make up-desktop`, que irá executar apenas as plays referentes ao desktop.
 
-A automação foi escrita para que os comandos sejam idempotentes, ou seja, não tem problema fazer a chamada mais de uma vez.
-
-## Configurando o ambiente
-
-As configurações estão centralizadas no arquivo `env.yml`. Disponibilizei um arquivo sample junto no repositório para auxiliar. 
-
-Mais detalhes sobre as opções a serem configuradas podem ser vistas [aqui](docs/config.md).
+A automação foi escrita para que os comandos sejam idempotentes, ou seja, não tem problema fazer a chamada mais de uma vez, é inclusive, recomendado para confirmar que a configuração está conforme esperado.
 ## Contribuindo
 
 Apesar deste repositório ser voltado para o meu cenário e ambiente, muitas configurações podem ser reaproveitadas e adaptadas aos mais diversos cenários. Portanto, contribuições são muito bem vindas, basta fazer um fork e abrir um PR. 
