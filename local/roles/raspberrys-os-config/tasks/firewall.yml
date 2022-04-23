@@ -1,0 +1,12 @@
+---
+- name: Deny everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: deny
+
+- name: SSH Access
+  community.general.ufw:    
+    rule: limit
+    port: ssh
+    proto: tcp
+    src: "{{ local_network.CIDR }}"
