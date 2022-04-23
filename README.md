@@ -30,6 +30,7 @@ Apesar deste repositório não ter o intuíto de ser replicável, as partes docu
     - Configuração de sudo  [...Ler...](docs/sudo.md)    
     - Configuração do SSH  [...Ler...](docs/ssh.md)
     - Instalação das ferramentas [...Ler...](docs/install.md)
+    - Resolução de problemas [...Ler...](docs/troubleshooting.md)
 
 ## Como subir o ambiente
 

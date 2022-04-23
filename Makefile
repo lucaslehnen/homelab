@@ -8,7 +8,7 @@ up-vms:
 	cd local && \
 	ansible-playbook -i hosts.yml site.yml --extra-vars "@../env.yml"
 
-up:	up-vms	
+up:	up-vms up-rasps	
 
 reset:
 	@echo " ---- Revertendo as alterações do playbook ..."
