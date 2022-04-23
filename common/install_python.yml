@@ -1,0 +1,30 @@
+---
+# Ansible tasks file for install python
+- name: "Verifica se o python esta instalado"
+  raw: "which python3"
+  changed_when: false
+  ignore_errors: true
+  register: python_info
+
+- name: "Binário do python que foi encontrado: "
+  debug:
+    msg: "{{ python_info.stdout }}" 
+  when: python_info.stdout.find('/python') >= 0
+
+- name: "Install Python 3"
+  raw: "sudo apt-get -y install python3-minimal python3-venv" 
+  changed_when: true
+  when: python_info.stdout.find('/python') < 0
+
+- name: "Checking virtual env"
+  stat:
+    path: "{{ pyenv.env_path }}{{ pyenv.env_name }}"
+  register: virtualenv_check
+  
+- name: "Creating a virtual env"
+  raw: "python3 -m venv {{ pyenv.env_path }}{{ pyenv.env_name }}"
+  when: not virtualenv_check.stat.exists
+
+- name: "Setting the interpreter"
+  set_fact:
+    ansible_python_interpreter: "{{ pyenv.env_path }}{{ pyenv.env_name }}/bin/python3"

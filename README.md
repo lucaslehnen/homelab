@@ -1,8 +1,9 @@
 # Laboratório pessoal 
 
-<img src="https://img.shields.io/badge/Ansible->%3D2.11.5-red?style=for-the-badge&logo=ansible&logoColor=white" alt="Ansible">
-<img src="https://img.shields.io/badge/Terraform->%3D1.0.7-6a01eb?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform">
-<img src="https://img.shields.io/badge/Packer->%3D1.7.5-blue?style=for-the-badge&logo=packer&logoColor=white" alt="Packer">
+![Ansible](https://img.shields.io/badge/Ansible->%3D2.11.5-red?logo=ansible&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform->%3D1.0.7-6a01eb?logo=terraform&logoColor=white)
+![Packer](https://img.shields.io/badge/Packer->%3D1.7.5-blue?logo=packer&logoColor=white)
+[![wakatime](https://wakatime.com/badge/github/lucaslehnen/homelab.svg)](https://wakatime.com/badge/github/lucaslehnen/homelab)
 
 Este repositório reúne as aplicações e configurações aplicadas no meu laboratório pessoal. 
 Utilizo o lab para testar tecnologias e instalar aplicações de uso diário. 
@@ -11,31 +12,72 @@ A ideia é configurar alguns hosts na nuvem e ter as minhas raspberry's locais r
 
 Apesar deste repositório não ter o intuíto de ser replicável, as partes documentadas visam trazer um exemplar de aplicabilidade de diversos recursos que poderão ser registrados em outros repositórios (Roles do ansible, Helm charts, módulos de Terraform, etc). 
 
-## Roadmap:
+### Documentação do ambiente
 
-Utilizarei o projeto público abaixo para organizar o roadmap de estudos e manter os reviews de recursos que foram testados ou estão no ambiente. 
+- Motivadores e objetivos [...Ler...](docs/objetivos.md)
+- Configurações [...Ler...](docs/config.md)
+- Ambiente local:
+    - Overview da infra local [...Ler...](docs/infra_local.md)    
+    - Instalação e configuração do Desktop [...Ler...](docs/desktop.md)
+    - Instalação e configuração das Raspberrys [...Ler...](docs/raspberrys.md)
+- Ambiente na cloud:
+    - Overview das Clouds
+    - Instalação e configuração da OCI (Oracle Cloud Infrastructure)
+    - Instalação e configuração da AWS (Amazon Web Services)
+    - Instalação e configuração da Azure (Microsoft)
+    - Instalação e configuração da GCP (Google Cloud Platform)
+- Documentação complementar
+    - Configuração de sudo  [...Ler...](docs/sudo.md)    
+    - Configuração do SSH  [...Ler...](docs/ssh.md)
+    - Instalação das ferramentas [...Ler...](docs/install.md)
 
-https://github.com/users/lucaslehnen/projects/3/views/1
+## Como subir o ambiente
 
-*** Se você quiser replicar o ambiente em máquinas virtuais, deve funcionar também, pois estarei testando nas arquiteturas arm64 e amd64.
+Um playbook Ansible controla o lançamento de todo o ambiente descrito na documentação. Ou seja, os ambientes de virtualização nas máquinas locais, a instalação dos clusters e a preparação da nuvem para receber as aplicações. 
 
-## Infraestrutura atual:
+As aplicações em si, ficam em repositórios específicos de lançamento no Github.
+No CI/CD destes repositórios de apps é que será configurado o deploy para lançamento das mesmas. 
 
-Aqui especificarei de maneira macro o que estou usando no ambiente: 
+### Preparar a sua máquina
+
+Antes de executar o playbook que fará toda a instalação, são necessários alguns passos:
+
+Vamos adicionar o suporte das ferramentas de compilação (Make):
+
 ```
-[X] 2 Raspberry 4 Model B - 2 GB RAM c/ MicroSD de 32 GB
-[X] 1 Raspberry 4 Model B - 4 GB RAM c/ MicroSD de 128 GB
-[X] 1 Switch 5 Portas
-[X] 1 Roteador com USB para driver externo de armazenamento
-[X] 1 SSD's Evo 850 120GB
-[X] 1 PC i7 4790K / 16GB RAM / 120 SSD (expansível)
+$ apt install build-essential
 ```
-### Desenho do ambiente
 
-![](docs/overview.png)
+O Ansible, Terraform e Packer também são requeridos. Informações de como instalá-los estão [aqui](doc/install.md).
 
-No meu desktop, eu instalei o Debian, e configurei máquinas virtuais nele. Como as vezes uso este computador para trabalhar ou jogar, o cluster de máquinas virtuais não ficará sempre online (Normalmente estou do meu notebook).
+
+As configurações estão centralizadas no arquivo `env.yml`. Aqui é onde serão colocadas as variáveis a serem carregadas para as ferramentas e a definição ou não de certas configurações podem habilitar ou desabilitar recursos na infra.
+
+Disponibilizei um arquivo `env.sample.yml` junto no repositório para auxiliar. 
+Mais detalhes sobre as opções a serem configuradas podem ser vistas [aqui](docs/config.md).
+
+### Preparar os alvos
+
+As máquinas alvo já devem estar com o acesso SSH configurado, conforme [esta documentação](docs/ssh.md)
+
+### Como funciona a automação
+
+A partir do arquivo `Makefile`, as demais ferramentas como o Terraform, Packer, Ansible e scripts são acionadas. O objetivo do Makefile é acionar o que for possível para subir o ambiente em apenas um comando. `install`, `up` e `down` são os comandos principais, sendo que comandos parciais podem ser embutidos neles.
+
+ - `make install` <br>
+    É a primeira coisa a se fazer, provavelmente você só vai fazê-lo uma vez.    
+    Faz a instalação e inicialização das ferramentas de IaC, downloads necessários na maquina local, como as collections e roles utilizadas no Ansible.;
+
+- `make up` <br>
+    Roda todos os comandos na ordem adequada para subir o ambiente COMPLETAMENTE.
+
+ - `make down` <br>
+    Desfaz as instalações realizadas no up. 
+
+Alguns prefixos após os comandos up e down podem acionar apenas parte da automação, como por exemplo o `make up-desktop`, que irá executar apenas as plays referentes ao desktop.
+
+A automação foi escrita para que os comandos sejam idempotentes, ou seja, não tem problema fazer a chamada mais de uma vez, é inclusive, recomendado para confirmar que a configuração está conforme esperado.
 
 ## Contribuindo
 
-Apesar deste repositório ser voltado para o meu cenário e ambiente, muitas configurações podem ser reaproveitadas e adaptadas aos mais diversos cenários. Portanto, contribuições são muito bem vindas, basta fazer um fork e abrir um PR. 
+Apesar deste repositório ser voltado para o meu cenário e ambiente, muitas configurações podem ser reaproveitadas e adaptadas aos mais diversos cenários. Portanto, contribuições são muito bem vindas, basta fazer um fork e abrir um PR. Observe os repositórios utilizados e ligados à este, eles podem ser bem úteis, uma vez que seu propósito é serem mais específicos e reaproveitaveis. 

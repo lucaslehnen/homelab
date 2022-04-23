@@ -1,0 +1,6 @@
+---
+- name: "Gathering facts"
+  setup:
+    filter: 'ansible_distribution_release'
+- include: install.yml
+- include: build.yml

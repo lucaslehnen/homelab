@@ -1,0 +1,17 @@
+---
+roles:
+
+collections:
+  - name: community.general
+
+  - name: https://github.com/lucaslehnen/tchecode.libvirt.git
+    type: git
+    version: main
+
+  - name: https://github.com/lucaslehnen/tchecode.vmware.git
+    type: git
+    version: main
+
+  - name: https://github.com/lucaslehnen/tchecode.kvm_qemu.git
+    type: git
+    version: main

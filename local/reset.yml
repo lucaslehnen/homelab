@@ -1,0 +1,34 @@
+- name: "Lendo o arquivo de configuração e carregando as variáveis e máquinas alvo..."
+  connection: local
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: "Adiciona o host do Qemu no inventário..."
+      when: kvm_qemu.host is defined
+      add_host:
+        name: "{{ kvm_qemu.host }}"
+        groups: "kvm_qemu"
+        bridge_network: "{{ kvm_qemu.bridge_network }}"
+      changed_when: false
+
+    - name: "Adiciona o host do VMWare no inventário..."
+      when: vmware.host is defined
+      add_host:
+        name: "{{ vmware.host }}"
+        groups: vmware
+
+- name: "Revertendo modificações nos servidores de Qemu"
+  hosts: kvm_qemu
+  user: lucas
+  become: true
+  gather_facts: true
+  roles:
+    - tchecode.libvirt.reset
+
+- name: "Revertendo modificações nos servidores de VMWare"
+  hosts: vmware
+  user: lucas
+  become: true
+  gather_facts: true
+  roles:
+    - tchecode.vmware.reset
