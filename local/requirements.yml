@@ -1,5 +1,8 @@
 ---
 roles:
+  - src: https://github.com/lucaslehnen/disable-cloud-init.git
+    version: 1.0.1
+    name: disable-cloud-init  
 
 collections:
   - name: community.general

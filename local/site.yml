@@ -17,6 +17,25 @@
         groups: vmware
       changed_when: false
 
+    - name: "Adiciona os hosts servers k3s das Raspberrys..."
+      when: k3s.raspberrys.server is defined
+      add_host:
+        name: "{{ item }}"
+        groups: 
+          - raspberrys
+          - k3s_server
+          - k3s_cluster
+      with_items: "{{ k3s.raspberrys.server }}"
+    
+    - name: "Adiciona os hosts clients k3s das Raspberrys..."
+      add_host:
+        name: "{{ item }}"
+        groups: 
+          - raspberrys
+          - k3s_agent
+          - k3s_cluster
+      with_items: "{{ k3s.raspberrys.client }}"
+
 - name: "Instala o Python nas máquinas que já estão provisionadas"
   hosts: remote
   user: "{{ remote_user }}"
@@ -43,3 +62,12 @@
   gather_facts: false
   roles:
     - tchecode.vmware.install_ws
+
+- name: "Configurações básicas das raspberrys"
+  hosts: raspberrys
+  user: ubuntu
+  become: true
+  gather_facts: false
+  roles:
+    - raspberrys-os-config
+    - disable-cloud-init
