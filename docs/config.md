@@ -2,7 +2,7 @@
 
 ## Configurações disponíveis
 
-Recomendo a leitura de toda a documentação para entender todas as opções, mas abaixo trago um sumário das configurações disponíveis para o ambiente.
+Recomendo a leitura de toda a documentação para entender todas as opções no ambiente, mas abaixo trago um sumário das configurações disponíveis para habilitar ou não recursos.
 
 Todas as ferramentas buscam as variáveis a partir deste arquivo, sendo que a automação vai jogar no formato padrão de cada ferramenta.
 

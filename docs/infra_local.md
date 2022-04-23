@@ -47,21 +47,21 @@ Mais informações: [Configuração do Desktop](desktop.md)
 
 As Raspberrys gastam menos luz que o meu Desktop, portanto pretendo deixar algumas coisas rodando dentro de um cluster Kubernetes. 
 
-A ideia inicial foi colocar distros distintas de Linux, pegando principalmente as duas grandes famílias RHEL e Debian para exercitar os pormenores de cada distro. 
+A ideia inicial foi colocar Ubuntu, principalmente devido a facilidade de baixar e configurar. No futuro, penso em colocar outras distribuições para otimizar as playbooks. 
 
 ```
 Nome   : rp-01
-SO     : Debian 11
+SO     : Ubuntu 22.04
 RAM    : 4GB
-SDCard : 128GB
+SDCard : 32GB
 
 Nome   : rp-02
-SO     : CentOS Stream
+SO     : Ubuntu 22.04
 RAM    : 2GB
 SDCard : 32GB
 
 Nome   : rp-03
-SO     : Ubuntu 21.10
+SO     : Ubuntu 22.04
 RAM    : 2GB
 SDCard : 32GB
 ``` 
@@ -70,7 +70,7 @@ Mais informações: [Configuração das Raspberrys](raspberrys.md)
 
 ---
 
-Próximo Tópico: [Configuração do Desktop](desktop.md)
+Próximo Tópico: [Configuração do servidor Desktop](desktop.md)
 
 ---
 [Voltar à raiz](../README.md)

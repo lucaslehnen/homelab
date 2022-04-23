@@ -1,6 +1,6 @@
 [Voltar à raiz](../README.md)
 
-## Configuração do Desktop:
+## Configuração do servidor Desktop:
 ### Preparando o Debian 
 
 O Debian 11 foi uma escolha pessoal, ele vem com poucos serviços de largada, então achei interessante para economizar RAM para a máquina virtual, mas a princípio pode ser qualquer distro. Os passos aqui descritos serão os aplicados para o Debian, sendo que no futuro o playbook pode ser aprimorado para outras distros.
@@ -22,15 +22,17 @@ Abaixo as opções de virtualizadores configurados para executar as máquinas.
 
 ### Qemu / Libvirt
 
+#Todo
 
 ### VMWare
+
+** Este virtualizador não será utilizado por hora, devido a falta de ferramentas integradas para o Terraform e Packer. 
 
 Dentro do Debian, a opção com VMWare, seria o Workstation. Ai dentro dele, poderia ser colocado o ESXi para testes futuros. 
 
  > Tentei utilizar o VMWare Player, mas o bundle dele não tem os utilitários necessários para o Packer e Terraform. 
 
 O principal "problema" do Workstation é a necessidade de licença, mas futuramente pretendo ver esse ponto. 
-Deixei 
 
 Estou montando uma collection do Ansible para instalar e operar as ferramentas do VMWare. Então a ideia é chamá-la aqui neste playbook. 
 Mais detalhes no repositório da collection:  https://github.com/lucaslehnen/tchecode.vmware
